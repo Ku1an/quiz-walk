@@ -1,7 +1,6 @@
 //Mongoose models
 import { SubmitQuiz } from "../models/quizSubmitSchema";
-import { Quiz } from "../models/quizSchema";
-
+import ApiGateAwayClient from "../api";
 //Validations
 import {
   PostSubmitQuiz,
@@ -21,7 +20,7 @@ class QuizSubmitService {
           answers: correctedSubmit.answers,
           correctCount: correctedSubmit.correctCount,
         });
-        this.correct = correctedSubmit.correctCount
+        this.correct = correctedSubmit.correctCount;
         submitQuiz.save();
         console.log("A quiz answer were succesfully saved: ", correctedSubmit);
       } else {
@@ -37,11 +36,12 @@ class QuizSubmitService {
   ): Promise<SavedSubmisson | undefined> {
     try {
       let correctAnswers = 0;
-      const result = await Quiz.findById(submitQuiz.quizId).select(
-        "questions.answer questions._id"
+      //Contacts API gateaway to get answers for a specific quiz
+      const result = await ApiGateAwayClient.get(
+        `/quiz/${submitQuiz.quizId}/answers`
       );
-      if (result) {
-        for (let item of result.questions) {
+      if (result.data) {
+        for (let item of result.data.questions) {
           const correctAnswer = item.answer;
           const questionId = item._id.toString();
           submitQuiz.answers[questionId] === correctAnswer
@@ -67,14 +67,16 @@ class QuizSubmitService {
         {
           $group: {
             _id: "$quizId",
-            leaderboard: { $push: {
+            leaderboard: {
+              $push: {
                 user: "$user",
-                correctCount: "$correctCount"
-            } }, 
+                correctCount: "$correctCount",
+              },
+            },
           },
         },
       ]);
-      return result
+      return result;
     } catch (error) {
       console.error("Could not retrive all leaderboards");
     }

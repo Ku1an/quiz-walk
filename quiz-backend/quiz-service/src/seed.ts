@@ -35,7 +35,7 @@ const quizzes = [
     questions: [
       {
         question: "Who wrote 'Hamlet'?",
-        options: ["Shakespeare", "Tolstoy", "Hemingway", "Dante"],
+        options: ["Shakespeare", "Tolstoy", "Hemingway"],
         answer: "Shakespeare",
       },
       {

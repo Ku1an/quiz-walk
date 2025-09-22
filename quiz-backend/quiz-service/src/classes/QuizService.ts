@@ -31,6 +31,14 @@ class QuizService {
         return quiz
     }
 
+    public async getQuizAnswersById(id: String) {
+        console.log("Getting quiz answers from quiz ID: ", id)
+        const answers = await Quiz.findById(id).select(
+            "questions.answer questions._id"
+        );
+        return answers
+    }
+
 }
 
 export default QuizService;

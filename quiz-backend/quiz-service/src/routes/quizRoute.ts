@@ -38,6 +38,21 @@ router.get("/quiz/:quizId", async (req: Request, res: Response) => {
     }
 })
 
+router.get("/quiz/:quizId/answers", async (req: Request, res: Response) => {
+        try {
+        const quizsvc = new QuizService()
+        const result = await quizsvc.getQuizAnswersById(req.params.quizId)
+        if(!result) {
+            res.status(404).json({err: "Answers not found"})
+        }
+        res.status(200).json(result)
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({err: "An error occurred while retrieving Quiz"})
+    }
+})
+
 
 //Creates quiz, Needs questions, title, and what is correct and not
 router.post("/quiz", (req: Request, res: Response) => {
