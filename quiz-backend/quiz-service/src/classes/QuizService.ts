@@ -1,4 +1,4 @@
-import { Quiz } from "../models/QuizSchema";
+import { Quiz } from "../models/quizSchema";
 import { PostQuiz } from "../validations/quizValidation";
 
 class QuizService {

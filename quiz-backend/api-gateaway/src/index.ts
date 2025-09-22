@@ -4,7 +4,8 @@ import dotenv from 'dotenv';
 //Routes
 
 import quizRoute from "./routes/quizSvcRoutes"
-
+import quizResultRoute from "./routes/quizResultSvcRoutes"
+ 
 
 //For env File 
 dotenv.config();
@@ -16,6 +17,7 @@ const port = process.env.API_GATEAWAY_PORT || 3001;
 app.use(express.json())
 
 app.use("/api/v1", quizRoute)
+app.use("/api/v1", quizResultRoute)
 
 
 app.listen(port, () => {
