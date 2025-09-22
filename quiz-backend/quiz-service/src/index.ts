@@ -1,12 +1,32 @@
 import express, { Express, Request, Response , Application } from 'express';
 import dotenv from 'dotenv';
 
+//Database
+import Quizdb from './classes/Quizdb';
+
 
 //Routes
 import quizRoute from "./routes/quizRoute"
 
 //For env File 
 dotenv.config();
+
+
+console.log(process.env.QUIZ_DATABASE_URI)
+const dbconn = process.env.QUIZ_DATABASE_URI ? new Quizdb(process.env.QUIZ_DATABASE_URI) : null
+
+
+//Loop here, program will NOT work unless connected to db
+if(dbconn instanceof Quizdb) {
+    dbconn.connect()
+    .then(() => {
+        console.log("Connected to db...")
+    })
+}
+else {
+    console.log("ENV variable QUIZ_DATABASE_URI has not been set: ", process.env.QUIZ_DATABASE_URI)
+}
+
 
 
 const app: Application = express();

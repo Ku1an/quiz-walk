@@ -3,17 +3,36 @@ import express, { Request, Response } from "express";
 import { postQuizSchema } from "../validations/quizValidation";
 import { z } from "zod";
 
+//QuizService
+import QuizService from "../classes/QuizService";
+
 const router = express.Router();
 
 
 //Returns ALL quizz titles and their ID
-router.get("/quiz", (req: Request, res: Response) => {
-    return res.send("hello")
+router.get("/quiz", async (req: Request, res: Response) => {
+    try {
+        const quizsvc = new QuizService()
+        const results = await quizsvc.getQuizzes()
+        res.status(200).json(results)
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({err: "An error occurred while retrieving Quizzes"})
+    }
 })
 
 //Returns specific quiz with their respective questions etc
-router.get("/quiz/:quizId", (req: Request, res: Response) => {
-    return res.send(req.params.quizId)
+router.get("/quiz/:quizId", async (req: Request, res: Response) => {
+    try {
+        const quizsvc = new QuizService()
+        const result = await quizsvc.getQuizById(req.params.quizId)
+        res.status(200).json(result)
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({err: "An error occurred while retrieving Quiz"})
+    }
 })
 
 
@@ -21,8 +40,10 @@ router.get("/quiz/:quizId", (req: Request, res: Response) => {
 router.post("/quiz", (req: Request, res: Response) => {
     try {
         const quizPost = req.body
-        console.log(quizPost)
         postQuizSchema.parse(quizPost)
+        //Quiz validated now save quiz in Mongo
+        const quizsvc = new QuizService()
+        quizsvc.saveQuiz(quizPost)
         res.status(201).send("OK")
     } catch (error) {
         if(error instanceof z.ZodError) {

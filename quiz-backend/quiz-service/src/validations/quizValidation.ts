@@ -9,6 +9,6 @@ const questionSchema = z.strictObject({
 export const postQuizSchema = z.strictObject({
     quizTitle: z.string().min(1, "Quiz title must be provided"),
     questions: z.array(questionSchema).min(1)
-
-
 })
+
+export type PostQuiz = z.infer<typeof postQuizSchema>
