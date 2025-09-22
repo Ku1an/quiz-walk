@@ -9,6 +9,8 @@ import {
 } from "../validations/quizSubmitValidation";
 
 class QuizSubmitService {
+  public correct: Number = 0;
+
   public async saveSubmit(submitQuiz: PostSubmitQuiz) {
     try {
       const correctedSubmit = await this.countCorrectAnwers(submitQuiz);
@@ -19,6 +21,7 @@ class QuizSubmitService {
           answers: correctedSubmit.answers,
           correctCount: correctedSubmit.correctCount,
         });
+        this.correct = correctedSubmit.correctCount
         submitQuiz.save();
         console.log("A quiz answer were succesfully saved: ", correctedSubmit);
       } else {

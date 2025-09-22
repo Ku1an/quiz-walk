@@ -6,7 +6,7 @@ const router = express.Router();
 router.post("/submissions", async (req: Request, res: Response) => {
   try {
     const result = await quizResultAxiosClient.post("/submissions", req.body);
-    res.status(result.status).send(result.data);
+    res.status(result.status).json(result.data);
   } catch (err: any) {
     if (err.response && err.response.status)
       res.status(err.response.status).json({ err: err.response });
@@ -14,6 +14,8 @@ router.post("/submissions", async (req: Request, res: Response) => {
   }
 });
 
+
+//Only return top 10 here
 router.get("/submissions/leaderboard", async (req: Request, res: Response) => {
   try {
     const result = await quizResultAxiosClient.get("/submissions/leaderboard");

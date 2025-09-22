@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 //Database
 import Quizdb from './classes/Quizdb';
 
+//Seed Database
+import SeedQuizDefault from './seed'; 
 
 //Routes
 import quizRoute from "./routes/quizRoute"
@@ -21,6 +23,8 @@ if(dbconn instanceof Quizdb) {
     dbconn.connect()
     .then(() => {
         console.log("Connected to db...")
+        //Constructor calles seeding functionality, if db HAS NOT been seeded it proceeds to add default quizzes
+        const seedQuiz = new SeedQuizDefault()        
     })
 }
 else {

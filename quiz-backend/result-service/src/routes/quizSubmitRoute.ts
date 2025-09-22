@@ -43,14 +43,14 @@ router.get("/submissions/leaderboard", async (req: Request, res: Response) => {
 
 
 //Submits quiz answer, corrects it and stores it
-router.post("/submissions", (req: Request, res: Response) => {
+router.post("/submissions", async (req: Request, res: Response) => {
     try {
         const quizPost = req.body
         postQuizSubmitSchema.parse(quizPost)
         //Save in mongodb
         const submitQuiz = new QuizSubmitService()
-        submitQuiz.saveSubmit(quizPost)
-        res.status(201).send("OK")
+        await submitQuiz.saveSubmit(quizPost)
+        res.status(201).json({correct: submitQuiz.correct})
     } catch (error) {
         if(error instanceof z.ZodError) {
             console.log(error)

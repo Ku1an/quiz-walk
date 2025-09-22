@@ -8,6 +8,8 @@
       src="/quiz.png"
       style="opacity: 0.7;"
     ></v-img>
+        <v-btn color="primary" class="position-fixed right-0 ma-4 mt-6 mr-10" icon="mdi-home-circle" @click="goToLandingPage">
+    </v-btn>
     <v-main>
       <RouterView />
     </v-main>
@@ -15,6 +17,12 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+const goToLandingPage = () => {
+    router.push("/")
+}
 
 </script>
 

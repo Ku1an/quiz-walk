@@ -1,6 +1,4 @@
 <template>
-    <v-btn color="primary" class="position-fixed right-0 ma-4 mt-6 mr-10" icon="mdi-home-circle" @click="goToLandingPage">
-    </v-btn>
   <v-container>
     <v-form ref="form" @submit.prevent="submitQuiz">
       <v-text-field
@@ -13,9 +11,10 @@
         required
       ></v-text-field>
 
-      <div v-for="(q, index) in questions" :key="index" class="mb-4 mt-6">
+      <div v-for="(q, index) in questions" class="mb-4 mt-6">
         <v-text-field
-        prepend-inner-icon="mdi-chat-question"
+          :key="index"
+          prepend-inner-icon="mdi-chat-question"
           v-model="q.question"
           :label="`Question ${index + 1}`"
           :rules="[v => !!v || 'Question is required']"
@@ -36,6 +35,8 @@
         </div>
 
         <v-select
+          :key="q.options + String(index)"
+          :disabled="!q.options.every(opt => opt  !== '')"
           prepend-inner-icon="mdi-check-bold"
           color="success"
           v-model="q.answer"
@@ -47,7 +48,6 @@
         ></v-select>
         <div class="d-flex justify-center">
             <v-btn color="red" text @click="removeQuestion(index)">Remove Question</v-btn>
-
         </div>
         <v-divider class="my-2"></v-divider>
       </div>
@@ -61,13 +61,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import axios from "axios";
-import { useRouter } from 'vue-router';
-const router = useRouter();
-
-
-
+import ApiGateAwayClient from "@/api";
 
 interface Question {
   question: string;
@@ -75,10 +71,14 @@ interface Question {
   answer: string;
 }
 
+
+
 const quizTitle = ref("");
 const questions = reactive<Question[]>([
   { question: "", options: ["", "", ""], answer: "" },
 ]);
+
+
 
 const addQuestion = () => {
   questions.push({ question: "", options: ["", "", ""], answer: "" });
@@ -99,7 +99,7 @@ const submitQuiz = async () => {
   };
 
   try {
-    const response = await axios.post("http://localhost:8080/api/v1/quiz", payload);
+    await ApiGateAwayClient.post("/quiz", payload);
     alert("Quiz submitted successfully!");
     quizTitle.value = "";
     questions.splice(0, questions.length, { question: "", options: ["", "", ""], answer: "" });
@@ -108,11 +108,6 @@ const submitQuiz = async () => {
     alert("Error submitting quiz");
   }
 };
-
-const goToLandingPage = () => {
-    router.push("/")
-}
-
 
 </script>
 

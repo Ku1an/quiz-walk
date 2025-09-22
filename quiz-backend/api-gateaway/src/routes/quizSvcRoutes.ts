@@ -3,6 +3,7 @@ import quizAxiosClient from "../api/quizServiceApi";
 
 const router = express.Router();
 
+//Returns all available quizzes
 router.get("/quiz", async (req: Request, res: Response) => {
   try {
     const result = await quizAxiosClient.get("/quiz");
