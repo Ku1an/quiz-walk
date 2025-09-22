@@ -20,14 +20,14 @@ class QuizService {
 
     //Returns their id and title, not questions
     public async getQuizzes() {
-        console.log("Getting quizzes")
+        console.log("Getting quizzes (titels and id)")
         const quizzes = await Quiz.find().select("_id quizTitle")
         return quizzes
     }
 
     public async getQuizById(id: String) {
+        console.log("Getting quiz questions from quiz ID: ", id)
         const quiz = await Quiz.findById(id).select("_id quizTitle questions.question questions.options questions._id")
-        console.log(quiz)
         return quiz
     }
 
