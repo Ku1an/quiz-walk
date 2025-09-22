@@ -9,15 +9,13 @@
       style="opacity: 0.7;"
     ></v-img>
     <v-main>
-      <Landing />
+      <RouterView />
     </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
-import Landing from "./views/Landing.vue";
 
-//
 </script>
 
 <style>

@@ -1,6 +1,6 @@
 import express, { Express, Request, Response , Application } from 'express';
 import dotenv from 'dotenv';
-
+import cors from "cors";
 //Routes
 
 import quizRoute from "./routes/quizSvcRoutes"
@@ -14,6 +14,10 @@ dotenv.config();
 const app: Application = express();
 const port = process.env.API_GATEAWAY_PORT || 3001;
 
+
+app.use(cors({
+    origin: "http://localhost:3000",
+}))
 app.use(express.json())
 
 app.use("/api/v1", quizRoute)

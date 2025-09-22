@@ -7,13 +7,19 @@
                     <v-btn color="primary">Play Quiz</v-btn>
                 </v-col>
                 <v-col cols="6">
-                    <v-btn color="warning">Admin Page</v-btn>
+                    <v-btn color="warning" @click="goToCreateQuiz">Create Quiz</v-btn>
                 </v-col>
             </v-row>
     </div>
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+function goToCreateQuiz() {
+  router.push("/create");
+}
 
 </script>
 
