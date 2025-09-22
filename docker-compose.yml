@@ -1,16 +1,16 @@
 name: quiz-walk
 services:
-  frontend:
-    build: ./quiz-frontend
-    volumes:
-      - ./quiz-frontend:/app
-      - /app/node_modules
+  # frontend:
+  #   build: ./quiz-frontend
+  #   volumes:
+  #     - ./quiz-frontend:/app
+  #     - /app/node_modules
 
-    ports:
-      - 3000:3000
+  #   ports:
+  #     - 3000:3000
 
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=true
 
   quiz-service:
     build: ./quiz-backend/quiz-service
@@ -20,17 +20,17 @@ services:
     ports: 
     - 8000:8000
 
-  mongo:
-    image: mongo
-    restart: always
-    expose:
-      - 27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+#   mongo:
+#     image: mongo
+#     restart: always
+#     expose:
+#       - 27017
+#     environment:
+#       MONGO_INITDB_ROOT_USERNAME: root
+#       MONGO_INITDB_ROOT_PASSWORD: example
 
-    volumes:
-      - mongo-data:/data/db
+#     volumes:
+#       - mongo-data:/data/db
       
-volumes:
-  mongo-data:
+# volumes:
+#   mongo-data:

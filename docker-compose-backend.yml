@@ -1,0 +1,36 @@
+name: quiz-walk
+services:
+
+  api-gateaway:
+    build: ./quiz-backend/api-gateaway
+    volumes:
+      - ./quiz-backend/api-gateaway:/app
+      - /app/node_modules
+    ports: 
+    - 8080:8080
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+  
+  quiz-service:
+    build: ./quiz-backend/quiz-service
+    volumes:
+      - ./quiz-backend/quiz-service:/app
+      - /app/node_modules
+    ports: 
+    - 8000:8000
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+  mongo:
+    image: mongo
+    restart: always
+    expose:
+      - 27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+    volumes:
+      - mongo-data:/data/db
+      
+volumes:
+  mongo-data:

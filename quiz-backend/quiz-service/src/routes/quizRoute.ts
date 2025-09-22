@@ -27,6 +27,9 @@ router.get("/quiz/:quizId", async (req: Request, res: Response) => {
     try {
         const quizsvc = new QuizService()
         const result = await quizsvc.getQuizById(req.params.quizId)
+        if(!result) {
+            res.status(404).json({err: "Object not found"})
+        }
         res.status(200).json(result)
         
     } catch (error) {
