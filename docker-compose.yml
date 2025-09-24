@@ -34,7 +34,7 @@ services:
     # environment:
     #   - CHOKIDAR_USEPOLLING=true
   mongo:
-    image: mongo
+    image: mongo:8.0
     restart: always
     expose:
       - 27017
