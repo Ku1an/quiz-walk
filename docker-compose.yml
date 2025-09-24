@@ -1,44 +1,38 @@
 name: quiz-walk
 services:
 
-
   frontend:
     build: ./quiz-frontend
-    volumes:
-      - ./quiz-frontend:/app
-      - /app/node_modules
-
     ports:
-      - 3000:3000
-
+      - 80:80
     environment:
-      - CHOKIDAR_USEPOLLING=true
+      - VITE_API_GATEWAY_BASE_URL=http://localhost:8080/api/v1
 
   api-gateaway:
     build: ./quiz-backend/api-gateaway
-    volumes:
-      - ./quiz-backend/api-gateaway:/app
-      - /app/node_modules
+    # volumes:
+    #   - ./quiz-backend/api-gateaway:/app
+    #   - /app/node_modules
     ports: 
     - 8080:8080
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+    # environment:
+    #   - CHOKIDAR_USEPOLLING=true
   
   quiz-service:
     build: ./quiz-backend/quiz-service
-    volumes:
-      - ./quiz-backend/quiz-service:/app
-      - /app/node_modules
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+    # volumes:
+    #   - ./quiz-backend/quiz-service:/app
+    #   - /app/node_modules
+    # environment:
+    #   - CHOKIDAR_USEPOLLING=true
 
   result-service:
     build: ./quiz-backend/result-service
-    volumes:
-      - ./quiz-backend/result-service:/app
-      - /app/node_modules
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+    # volumes:
+    #   - ./quiz-backend/result-service:/app
+    #   - /app/node_modules
+    # environment:
+    #   - CHOKIDAR_USEPOLLING=true
   mongo:
     image: mongo
     restart: always
