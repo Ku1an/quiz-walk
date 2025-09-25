@@ -24,6 +24,9 @@ The **Quiz-Walk application** is a microservice-based web platform that allows u
 - The system follows a **microservices architecture** with an **API Gateway pattern** for centralized entry.  
 - All services are **containerized** and deployed in **Kubernetes**, communicating via **internal cluster networking**.  
 
+Here’s an overview of the system:
+
+![High-Level Architecture](hla-cloud.png)
 ---
 
 ### Components & Responsibilities
