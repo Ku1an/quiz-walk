@@ -103,7 +103,7 @@ spec:
     spec:
       containers:
       - name:  quiz-frontend
-        image:  kulan1337/quiz-frontend:test
+        image:  kulan1337/quiz-frontend:prod
         ports:
         - containerPort: 80
 
@@ -144,7 +144,7 @@ spec:
     spec:
       containers:
       - name:  quiz-api-gateaway
-        image:  kulan1337/quiz-api-gateaway:1
+        image:  kulan1337/quiz-api-gateaway:prod
         ports:
         - containerPort: 8080
         env:
@@ -153,12 +153,12 @@ spec:
         - name: QUIZ_BASE_URL
           valueFrom:
             configMapKeyRef:
-              name: api-gateaway-config
+              name: quiz-config
               key: quiz-handler-service
         - name: QUIZ_RESULT_BASE_URL
           valueFrom:
             configMapKeyRef:
-              name: api-gateaway-config
+              name: quiz-config
               key: quiz-result-service
 
 ---
@@ -199,7 +199,7 @@ spec:
     spec:
       containers:
       - name:  quiz-handler
-        image:  kulan1337/quiz-handler-service:1
+        image:  kulan1337/quiz-handler-service:prod
         ports:
         - containerPort: 8000
         env:
@@ -249,7 +249,7 @@ spec:
     spec:
       containers:
       - name:  quiz-result
-        image:  kulan1337/quiz-result-service:1
+        image:  kulan1337/quiz-result-service:prod
         ports:
         - containerPort: 8001
         env:
