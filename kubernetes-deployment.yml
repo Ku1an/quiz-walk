@@ -4,27 +4,29 @@ metadata:
   name: quiz-walk
 
 ---
-# MongoDB Persistent Volume Claim
+# MongoDB Headless Service (krävs för StatefulSet)
 apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mongo-pvc
-  namespace: quiz-walk
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-
----
-# MongoDB Deployment
-apiVersion: apps/v1
-kind: Deployment
+kind: Service
 metadata:
   name: mongo
   namespace: quiz-walk
 spec:
+  clusterIP: None
+  selector:
+    app: mongo
+  ports:
+    - port: 27017
+      targetPort: 27017
+
+---
+# MongoDB StatefulSet
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+  namespace: quiz-walk
+spec:
+  serviceName: mongo
   replicas: 1
   selector:
     matchLabels:
@@ -47,10 +49,15 @@ spec:
           volumeMounts:
             - name: mongo-storage
               mountPath: /data/db
-      volumes:
-        - name: mongo-storage
-          persistentVolumeClaim:
-            claimName: mongo-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+
 
 ---
 # MongoDB Service
@@ -190,6 +197,7 @@ metadata:
   name: api-gateway
   namespace: quiz-walk
 spec:
+  type: LoadBalancer
   selector:
     app: api-gateway
   ports:
