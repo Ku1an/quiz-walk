@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
-
+import dotenv from 'dotenv';
 import { Quiz } from "./models/quizSchema";
 import { Seed } from "./models/seedSchema";
+//Database
+import Quizdb from './classes/Quizdb';
 
 //Default quizzes
 const quizzes = [
@@ -111,4 +113,27 @@ export default class SeedQuizDefault {
       console.error("Could not seed database");
     }
   }
+}
+
+
+
+
+dotenv.config();
+
+
+console.log(process.env.QUIZ_DATABASE_URI)
+const dbconn = process.env.QUIZ_DATABASE_URI ? new Quizdb(process.env.QUIZ_DATABASE_URI) : null
+
+
+//Loop here, program will NOT work unless connected to db
+if(dbconn instanceof Quizdb) {
+    dbconn.connect()
+    .then(() => {
+        console.log("Connected to db...")
+        //Constructor calles seeding functionality, if db HAS NOT been seeded it proceeds to add default quizzes
+        const seedQuiz = new SeedQuizDefault()        
+    })
+}
+else {
+    console.log("ENV variable QUIZ_DATABASE_URI has not been set: ", process.env.QUIZ_DATABASE_URI)
 }

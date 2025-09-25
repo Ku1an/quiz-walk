@@ -15,8 +15,10 @@ const app: Application = express();
 const port = process.env.API_GATEAWAY_PORT || 3001;
 
 
+// Allows all CORS, not considered to be a good security practice
+//However, secuirty is not the focus for this assignment. 
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: "*",
 }))
 app.use(express.json())
 

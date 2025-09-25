@@ -53,10 +53,12 @@ onMounted(async () => {
     const result = await ApiGateAwayClient.get("/quiz");
     if (result.data) {
       for (let quiz of result.data) {
-        quizzes.value.push({
-          id: quiz._id,
-          title: quiz.quizTitle,
-        });
+        if(quiz._id && quiz.quizTitle) {
+            quizzes.value.push({
+              id: quiz._id,
+              title: quiz.quizTitle,
+            });
+        }
       }
     }
   } catch (err) {

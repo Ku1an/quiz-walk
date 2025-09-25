@@ -22,9 +22,7 @@ const dbconn = process.env.QUIZ_DATABASE_URI ? new Quizdb(process.env.QUIZ_DATAB
 if(dbconn instanceof Quizdb) {
     dbconn.connect()
     .then(() => {
-        console.log("Connected to db...")
-        //Constructor calles seeding functionality, if db HAS NOT been seeded it proceeds to add default quizzes
-        const seedQuiz = new SeedQuizDefault()        
+        console.log("Connected to db...")     
     })
 }
 else {

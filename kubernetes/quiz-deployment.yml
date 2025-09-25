@@ -1,0 +1,269 @@
+
+## Configs for the cluster
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quiz-config
+data:
+  quiz-handler-service: http://quiz-handler-service:8000
+  quiz-result-service: http://quiz-result-service:8001
+  quiz-api-gateway-service: http://quiz-api-gateaway-service:8080/api/v1
+  mongo-url: mongodb://root:example@mongo-service:27017/quizdb?authSource=admin
+
+---
+
+## Quiz mongoDB Service and Deployment
+
+apiVersion: v1
+kind: Service
+metadata:
+  name:  mongo-service
+spec:
+  selector:
+    app:  mongodb
+  type:  ClusterIP
+  ports:
+  - protocol:  TCP
+    port:  27017
+    targetPort:  27017
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-deployment
+  labels:
+    name: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name:  mongodb
+        image:  mongo:8.0
+        ports:
+        - containerPort: 27017
+        env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: root
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: example
+        volumeMounts:
+          - name:  quiz-storage
+            mountPath:  /data/db
+  volumeClaimTemplates:
+  - metadata:
+      name: quiz-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Mi
+---
+
+## Quiz frontend Service and its Deployment
+
+apiVersion: v1
+kind: Service
+metadata:
+  name:  quiz-frontend-service
+spec:
+  selector:
+    app:  quiz-frontend
+  type:  LoadBalancer
+  ports:
+  - protocol:  TCP
+    port:  80
+    targetPort:  80
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quiz-frontend-deployment
+  labels:
+    name: quiz-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: quiz-frontend
+  template:
+    metadata:
+      labels:
+        app: quiz-frontend
+    spec:
+      containers:
+      - name:  quiz-frontend
+        image:  kulan1337/quiz-frontend:prod
+        ports:
+        - containerPort: 80
+
+---
+
+## Quiz Api Gateaway Service and Deployment
+
+apiVersion: v1
+kind: Service
+metadata:
+  name:  quiz-api-gateaway-service
+spec:
+  selector:
+    app:  quiz-api-gateaway
+  type:  LoadBalancer
+  ports:
+  - protocol:  TCP
+    port:  8080
+    targetPort:  8080
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quiz-api-gateaway-deployment
+  labels:
+    name: quiz-api-gateaway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: quiz-api-gateaway
+  template:
+    metadata:
+      labels:
+        app: quiz-api-gateaway
+    spec:
+      containers:
+      - name:  quiz-api-gateaway
+        image:  kulan1337/quiz-api-gateaway:prod
+        ports:
+        - containerPort: 8080
+        env:
+        - name: API_GATEAWAY_PORT
+          value: "8080"
+        - name: QUIZ_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: quiz-config
+              key: quiz-handler-service
+        - name: QUIZ_RESULT_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: quiz-config
+              key: quiz-result-service
+
+---
+
+
+## Quiz handler Service and Deployment
+
+apiVersion: v1
+kind: Service
+metadata:
+  name:  quiz-handler-service
+spec:
+  selector:
+    app:  quiz-handler
+  type:  ClusterIP
+  ports:
+  - protocol:  TCP
+    port:  8000
+    targetPort:  8000
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quiz-handler-deployment
+  labels:
+    name: quiz-handler
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: quiz-handler
+  template:
+    metadata:
+      labels:
+        app: quiz-handler
+    spec:
+      containers:
+      - name:  quiz-handler
+        image:  kulan1337/quiz-handler-service:prod
+        ports:
+        - containerPort: 8000
+        env:
+        - name: QUIZ_SERVICE_PORT
+          value: "8000"
+        - name: QUIZ_DATABASE_URI
+          valueFrom:
+            configMapKeyRef:
+              name: quiz-config
+              key: mongo-url
+
+---
+
+
+## Quiz  Result Service and Deployment
+
+apiVersion: v1
+kind: Service
+metadata:
+  name:  quiz-result-service
+spec:
+  selector:
+    app:  quiz-result
+  type:  ClusterIP
+  ports:
+  - protocol:  TCP
+    port:  8001
+    targetPort:  8001
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quiz-result-deployment
+  labels:
+    name: quiz-result
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: quiz-result
+  template:
+    metadata:
+      labels:
+        app: quiz-result
+    spec:
+      containers:
+      - name:  quiz-result
+        image:  kulan1337/quiz-result-service:prod
+        ports:
+        - containerPort: 8001
+        env:
+        - name: QUIZ_SUBMIT_SERVICE_PORT
+          value: "8001"
+        - name: QUIZ_DATABASE_URI
+          valueFrom:
+            configMapKeyRef:
+              name: quiz-config
+              key: mongo-url
+        - name: API_GATEAWAY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: quiz-config
+              key: quiz-api-gateway-service
+
+---
