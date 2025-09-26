@@ -27,6 +27,14 @@ The **Quiz-Walk application** is a microservice-based web platform that allows u
 Here’s an overview of the system:
 
 ![High-Level Architecture](hla-cloud.png)
+
+Here’s an overview of the Kubernetes cluser:
+
+
+![Kubernetes Architecture](kubernetescluster.jpg)
+
+
+
 ---
 
 ### Components & Responsibilities
